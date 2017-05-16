@@ -185,8 +185,26 @@ class Post_Widget extends WP_Widget {
      * Gibt die Daten im Frontend aus.
      */ 
     public function widget( $args, $instance ) {
-         
+        
+       
+        if ( ! empty( $instance['title'] ) ) {
+            $html = $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
+        }
+        
+        $posts  =   get_posts( 'numberposts=' . $instance['number'] );
+        $html  .=   '<ul class="list-group">';
+            
+        foreach ($posts as $post) {
+            $html .= '<li class="list-group-item">';
+            $html .= '<span class="badge">' . date('j F, Y', strtotime($post->post_date)) .'</span>';
+            $html .= '<a href="' . $post->post_name .' ">' . $post->post_title . '</a>';
+            $html .= '</li>';
+        }
+        
+        $html .= '</ul>';
+        echo $html;
     }
+         
     
     /*
      * Definiert die Backend-Formularfelder für den Admin.
@@ -194,6 +212,32 @@ class Post_Widget extends WP_Widget {
      */
     
     public function form( $instance ) {
+        
+        
+        $title  = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Titel', 'post-sidebar-widget' );
+        $number = ! empty( $instance['number'] ) ? $instance['number'] : 5;
+        
+        /*
+         * The Title Form Field
+         */
+        ?>
+
+        <p>
+        <label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'post-sidebar-widget' ); ?></label> 
+        <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
+        </p>
+        
+        <?php
+        /*
+         * The Number Form Field
+         */
+        ?>
+        
+        <p>
+        <label for="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>"><?php esc_attr_e( 'Anzahl der Posts:', 'post-sidebar-widget' ); ?></label> 
+        <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'number' ) ); ?>" type="text" value="<?php echo esc_attr( $number ); ?>">
+        </p>
+        <?php 
          
     }
     
@@ -203,5 +247,10 @@ class Post_Widget extends WP_Widget {
      */
     public function update( $new_instance, $old_instance ) { 
         
+        $instance = $old_instance;
+        $instance[ 'title' ] = strip_tags( $new_instance[ 'title' ] );
+        $instance[ 'number' ] = strip_tags( $new_instance[ 'number' ] );
+        
+        return $instance;
     }
 }
