@@ -197,7 +197,7 @@ class Post_Widget extends WP_Widget {
         foreach ($posts as $post) {
             $html .= '<li class="list-group-item">';
             $html .= '<span class="badge">' . date('j F, Y', strtotime($post->post_date)) .'</span>';
-            $html .= '<a href="' . $post->post_name .' ">' . $post->post_title . '</a>';
+            $html .= '<i class="fa fa-commenting-o" aria-hidden="true"></i> <a href="' . $post->post_name .' ">' . $post->post_title . '</a>';
             $html .= '</li>';
         }
         
