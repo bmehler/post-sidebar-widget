@@ -182,7 +182,7 @@ class Post_Widget extends WP_Widget {
     }
     
     /*
-     * Gibt die Daten im Frontend aus.
+     * Gibt die Daten auf Sites in der Sidebar aus.
      */ 
     public function widget( $args, $instance ) {
         
